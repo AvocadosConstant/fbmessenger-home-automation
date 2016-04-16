@@ -11,6 +11,7 @@ var SpotifyStrategy = require('passport-spotify').Strategy;
 
 var keys = require('./keys');
 var routes = require('./routes/index');
+var fb = require('./routes/fb');
 
 var app = express();
 
@@ -36,6 +37,7 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/', fb);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
