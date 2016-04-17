@@ -166,6 +166,7 @@ router.post('/webhook/', function (req, res) {
           break;
         case 'greet':
           sendTextMessage(sender, 'Hello! How are you doing today :\)');
+          break;
         case 'state':
           sendTextMessage(sender, 'Ok\nThanks for letting us know.');
           break;
