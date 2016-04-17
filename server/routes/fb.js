@@ -174,9 +174,42 @@ function sendImage(sender, imageURL) {
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
     }
-  })
+  });
 }
 
+function sendAllCams(sender, arr) {
+  var elements = [];
+  for(cam in arr) {
+    elements.push({
+        "title" : "Cam " + arr[cam],
+        "image_url": "https://fb.jagels.us/shot" + arr[cam] + ".jpg"
+    });
+  }
+  messageData = {
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "generic",
+        "elements": elements
+      }
+    }
+  }
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
 
 function has(msg, sub) {
   var index = msg.toLowerCase().indexOf(sub);
@@ -225,9 +258,13 @@ router.post('/webhook/', function (req, res) {
           sendText(sender, s.responses.GREET);
           break;
         case 'cam':
-          var num = text.match('/\d+/');
+          var num = text.match(/\d+/);
           sendText(sender, 'Here\'s your picture!');
-          sendImage(sender, 'https://fb.jagels.us/shot'+num+'.jpg');
+          if(has(text, 'all')) {
+            sendAllCams(sender, num);
+          } else {
+            sendImage(sender, 'https://fb.jagels.us/shot'+num[0]+'.jpg');
+          }
           break;
         case 'state':
           sendText(sender, s.responses.TFLUK);
