@@ -23,7 +23,7 @@ board.on("ready", function() {
   });
 
   setInterval(function() {
-    var roundedTemp = Number(temperature.fahrenheit).toFixed(2);
+    var roundedTemp = Number(temperature.fahrenheit).toFixed(1).toString();
     request.post({url:'https://fb.jagels.us/bot/getTemp/', body: roundedTemp}, function(err, res, body) {
       if (err) {
         return console.error('Temperature failed to send: ', err);
