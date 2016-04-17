@@ -17,10 +17,8 @@ router.get('/webhook/', function (req, res) {
   res.send('Error, wrong token');
 });
 
-function sendTextMessage(sender, text) {
-  messageData = {
-    text:text
-  }
+function sendText(sender, text) {
+  messageData = {text:text};
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
@@ -38,7 +36,7 @@ function sendTextMessage(sender, text) {
   });
 }
 
-function sendGenericMessage(sender) {
+function sendGeneric(sender) {
   console.log('Displaying generic message...');
   messageData = {
     "attachment": {
@@ -118,12 +116,40 @@ function sendTemperature(sender) {
     }
   }, function(error, response, body) {
     if (error) {
+      console.log('Error sending messages: ', error);
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error);
+    }
+  })
+}
+
+function sendImage(sender, imageURL) {
+  console.log('Sending image...');
+  messageData = {
+    "attachment": {
+      "type": "image",
+      "payload": {
+        "url": imageURL 
+      }
+    }
+  }
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
       console.log('Error sending messages: ', error)
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
     }
   })
 }
+
 
 function has(msg, sub) {
   var index = msg.toLowerCase().indexOf(sub);
@@ -144,6 +170,7 @@ function assessPrompt(msg) {
   if(msg === 'Generic') return 'generic';
   if(hasArr(msg, s.words.GREET)) return 'greet';
   if(hasArr(msg, s.words.STATE)) return 'state';
+  if(hasArr(msg, s.words.CAM)) return 'cam';
   if(hasArr(msg, s.words.DISPLAY) && hasArr(msg, s.words.TEMPERATURE)) return 'temperature';
   return 'default';
 }
@@ -158,19 +185,23 @@ router.post('/webhook/', function (req, res) {
       console.log('Received message: ' + text);
       switch(assessPrompt(text)) {
         case 'help':
-          sendTextMessage(sender, s.responses.HELP); 
+          sendText(sender, s.responses.HELP); 
           break;
         case 'generic':
-          sendGenericMessage(sender);
+          sendGeneric(sender);
           break;
         case 'temperature':
           sendTemperature(sender);
           break;
         case 'greet':
-          sendTextMessage(sender, s.responses.GREET);
+          sendText(sender, s.responses.GREET);
+          break;
+        case 'cam':
+          sendText(sender, 'Here\'s your picture!');
+          sendImage(sender, 'http://lorempixel.com/400/400/abstract/'); 
           break;
         case 'state':
-          sendTextMessage(sender, s.responses.TFLUK);
+          sendText(sender, s.responses.TFLUK);
           break;
         default:
           console.log('No prompt recognized...');
@@ -178,7 +209,7 @@ router.post('/webhook/', function (req, res) {
     }
     if (event.postback) {
       text = JSON.stringify(event.postback);
-      sendTextMessage(sender, "Postback received: "+text.substring(0, 200), token);
+      sendText(sender, "Postback received: "+text.substring(0, 200), token);
       continue;
     }
   }
