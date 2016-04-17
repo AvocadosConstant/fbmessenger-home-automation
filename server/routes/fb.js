@@ -133,16 +133,11 @@ function hasArr(msg, arr) {
 }
 
 function assessPrompt(msg) {
-  var displayKeywords = ['tell', 'give', 'show', 'what', 'display', 'how'];
-  var temperatureKeywords = ['temperature', 'temp', 'heat', 'hot', 'warm', 'cold'];
-  var greetKeywords = ['hello', 'hi', 'good day', 'what\'s up', 'whats up', 'sup', 'good morning', 'good evening'];
-  var stateKeywords = ['i am', 'i\'m', 'im '];
-
   if(has(msg, 'help')) return 'help';
   if(msg === 'Generic') return 'generic';
-  if(hasArr(msg, greetKeywords)) return 'greet';
-  if(hasArr(msg, stateKeywords)) return 'state';
-  if(hasArr(msg, displayKeywords) && hasArr(msg, temperatureKeywords)) return 'temperature';
+  if(hasArr(msg, s.words.GREET)) return 'greet';
+  if(hasArr(msg, s.words.STATE)) return 'state';
+  if(hasArr(msg, s.words.DISPLAY) && hasArr(msg, s.words.TEMPERATURE)) return 'temperature';
   return 'default';
 }
 
@@ -156,7 +151,7 @@ router.post('/webhook/', function (req, res) {
       console.log('Received message: ' + text);
       switch(assessPrompt(text)) {
         case 'help':
-          sendTextMessage(sender, s.HELP); 
+          sendTextMessage(sender, s.responses.HELP); 
           break;
         case 'generic':
           sendGenericMessage(sender);
@@ -165,10 +160,10 @@ router.post('/webhook/', function (req, res) {
           sendTemperature(sender);
           break;
         case 'greet':
-          sendTextMessage(sender, 'Hello! How are you doing today :\)');
+          sendTextMessage(sender, s.responses.GREET);
           break;
         case 'state':
-          sendTextMessage(sender, 'Ok\nThanks for letting us know.');
+          sendTextMessage(sender, s.responses.TFLUK);
           break;
         default:
           console.log('No prompt recognized...');
