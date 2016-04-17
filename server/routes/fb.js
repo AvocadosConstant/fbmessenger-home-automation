@@ -125,7 +125,14 @@ function sendTemperature(sender) {
   })
 }
 
-function has(msg, sub) {return msg.toLowerCase().includes(sub);}
+function has(msg, sub) {
+  var index = msg.toLowerCase().indexOf(sub);
+  if(index >= 0) {
+    var prev = msg.charAt(index-1);
+    var after = msg.charAt(index+sub.length);
+    if((prev==='' || prev===' ') && (after==='' || after===' ')){return true;}
+  } return false;
+}
 
 function hasArr(msg, arr) {
   for(sub in arr) {if(has(msg, arr[sub])) return true;}
