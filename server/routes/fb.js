@@ -43,20 +43,25 @@ function sendGenericMessage(sender) {
       "type": "template",
       "payload": {
         "template_type": "generic",
-        "elements": [{
+        "elements": [
+        {
           "title": "First card",
           "subtitle": "Element #1 of an hscroll",
           "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-          "buttons": [{
+          "buttons": [
+          {
             "type": "web_url",
             "url": "https://www.messenger.com",
             "title": "web url"
-          }, {
+          }, 
+          {
             "type": "postback",
             "title": "Postback",
             "payload": "Payload for first element in a generic bubble",
-          }],
-        }, {
+          }
+          ],
+        }, 
+        {
           "title": "Second card",
           "subtitle": "Element #2 of an hscroll",
           "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
@@ -65,6 +70,37 @@ function sendGenericMessage(sender) {
             "title": "Postback",
             "payload": "Payload for second element in a generic bubble",
           }],
+        }
+        ]
+      }
+    }
+  }
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
+function sendTemperature(sender) {
+  messageData = {
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "generic",
+        "elements": [{
+          "title": "The temperature in the house is OVER 9000!",
+          "subtitle": "WHAT?! 9000?!",
         }]
       }
     }
@@ -86,6 +122,20 @@ function sendGenericMessage(sender) {
   })
 }
 
+function assessPrompt(msg) {
+  if(msg === 'Generic') return 'generic';
+
+  var displayKeywords = ['tell', 'give', 'show', 'what', 'display', 'how'];
+  var temperatureKeywords = ['temperature', 'temp', 'heat', 'hot', 'cold'];
+
+  for(disp in displayKeywords) {
+    for(temp in temperatureKeywords) {
+      if(msg.toLowerCase().includes(displayKeywords[disp]) && msg.toLowerCase().includes(temperatureKeywords[temp])) {
+        return 'temperature';
+      }
+    }
+  }
+}
 
 router.post('/webhook/', function (req, res) {
   messaging_events = req.body.entry[0].messaging;
@@ -93,12 +143,16 @@ router.post('/webhook/', function (req, res) {
     event = req.body.entry[0].messaging[i];
     sender = event.sender.id;
     if (event.message && event.message.text) {
-      text = event.message.text;
-      if(text === 'Generic') {
-        sendGenericMessage(sender);
-        continue;
+      switch(assessPrompt(event.message.text)) {
+        case 'generic':
+          sendGenericMessage(sender);
+          break;
+        case 'temperature':
+          sendTemperature(sender);
+          break;
+        default:
+          sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
       }
-      sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
     }
     if (event.postback) {
       text = JSON.stringify(event.postback);
