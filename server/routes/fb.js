@@ -113,7 +113,7 @@ function sendGeneric(sender) {
   })
 }
 
-var recTemp = 72;
+var recTemp = 'null';
 function sendTemperature(sender) {
   console.log('Displaying temperature...');
   messageData = {
@@ -241,10 +241,12 @@ router.post('/webhook/', function (req, res) {
 
 router.post('/doorbell', function(req, res) {
   sendText(sender, 'DingDing');
+  res.send("Rang doorbell...");
 });
 
 router.post('/getTemp', function(req, res) {
   recTemp = req.body;
+  res.send("Set temp...");
 });
 
 var token = keys.FB_ACCESS_TOKEN;
