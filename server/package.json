@@ -13,6 +13,7 @@
     "express": "~4.13.1",
     "express-session": "^1.13.0",
     "morgan": "~1.6.1",
+    "multer": "^1.1.0",
     "passport": "^0.3.2",
     "passport-spotify": "^0.3.0",
     "request": "^2.71.0",
