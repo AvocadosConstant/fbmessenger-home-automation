@@ -17,6 +17,7 @@ router.get('/webhook/', function (req, res) {
 });
 
 function sendTextMessage(sender, text) {
+  console.log('Repeating user\'s message...');
   messageData = {
     text:text
   }
@@ -38,6 +39,7 @@ function sendTextMessage(sender, text) {
 }
 
 function sendGenericMessage(sender) {
+  console.log('Displaying generic message...');
   messageData = {
     "attachment": {
       "type": "template",
@@ -93,6 +95,7 @@ function sendGenericMessage(sender) {
 }
 
 function sendTemperature(sender) {
+  console.log('Displaying temperature...');
   messageData = {
     "attachment": {
       "type": "template",
@@ -144,6 +147,7 @@ router.post('/webhook/', function (req, res) {
     event = req.body.entry[0].messaging[i];
     sender = event.sender.id;
     if (event.message && event.message.text) {
+      console.log('Received message: ' + text);
       var text = event.message.text;
       switch(assessPrompt(text)) {
         case 'generic':
