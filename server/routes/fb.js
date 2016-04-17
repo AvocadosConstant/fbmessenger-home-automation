@@ -135,9 +135,13 @@ function hasArr(msg, arr) {
 function assessPrompt(msg) {
   var displayKeywords = ['tell', 'give', 'show', 'what', 'display', 'how'];
   var temperatureKeywords = ['temperature', 'temp', 'heat', 'hot', 'warm', 'cold'];
+  var greetKeywords = ['hello', 'hi', 'good day', 'what\'s up', 'whats up', 'sup', 'good morning', 'good evening'];
+  var stateKeywords = ['i am', 'i\'m', 'im '];
 
   if(has(msg, 'help')) return 'help';
   if(msg === 'Generic') return 'generic';
+  if(hasArr(msg, greetKeywords)) return 'greet';
+  if(hasArr(msg, stateKeywords)) return 'state';
   if(hasArr(msg, displayKeywords) && hasArr(msg, temperatureKeywords)) return 'temperature';
   return 'default';
 }
@@ -160,8 +164,13 @@ router.post('/webhook/', function (req, res) {
         case 'temperature':
           sendTemperature(sender);
           break;
-        default:
+        case 'greet':
+          sendTextMessage(sender, 'Hello! How are you doing today :\)');
+        case 'state':
           sendTextMessage(sender, 'Ok\nThanks for letting us know.');
+          break;
+        default:
+          console.log('No prompt recognized...');
       }
     }
     if (event.postback) {
