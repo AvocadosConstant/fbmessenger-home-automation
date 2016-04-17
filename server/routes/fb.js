@@ -113,6 +113,7 @@ function sendGeneric(sender) {
   })
 }
 
+var recTemp = 72;
 function sendTemperature(sender) {
   console.log('Displaying temperature...');
   messageData = {
@@ -121,8 +122,8 @@ function sendTemperature(sender) {
       "payload": {
         "template_type": "generic",
         "elements": [{
-          "title": "The temperature in the house is OVER 9000!",
-          "subtitle": "WHAT?! 9000?!",
+          "title": "Current Temperature",
+          "subtitle": recTemp
         }]
       }
     }
@@ -220,7 +221,7 @@ router.post('/webhook/', function (req, res) {
           break;
         case 'cam':
           sendText(sender, 'Here\'s your picture!');
-          sendImage(sender, 'https://fb.jagels.us/shot.jpg'); 
+          sendImage(sender, 'https://fb.jagels.us/shot.jpg');
           break;
         case 'state':
           sendText(sender, s.responses.TFLUK);
@@ -240,6 +241,10 @@ router.post('/webhook/', function (req, res) {
 
 router.post('/doorbell', function(req, res) {
   sendText(sender, 'DingDing');
+});
+
+router.post('/getTemp', function(req, res) {
+  recTemp = req.body;
 });
 
 var token = keys.FB_ACCESS_TOKEN;

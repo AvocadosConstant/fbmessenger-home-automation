@@ -14,7 +14,7 @@ board.on("ready", function() {
   });
 
   button.on("down", function() {
-    request.post({url:'https://fb.jagels.us/doorbell', body:'DING DONG!'}, function(err, res, body) {
+    request.post({url:'https://fb.jagels.us/bot/doorbell', body:'DING DONG!'}, function(err, res, body) {
       if (err) {
         return console.error('Doorbell not acknowledged: ', err);
       }
@@ -24,7 +24,7 @@ board.on("ready", function() {
 
   setInterval(function() {
     var roundedTemp = Number(temperature.fahrenheit).toFixed(2);
-    request.post({url:'https://fb.jagels.us/getTemp/', body: roundedTemp}, function(err, res, body) {
+    request.post({url:'https://fb.jagels.us/bot/getTemp/', body: roundedTemp}, function(err, res, body) {
       if (err) {
         return console.error('Temperature failed to send: ', err);
       }
