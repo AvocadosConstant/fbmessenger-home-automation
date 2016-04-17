@@ -127,7 +127,7 @@ function sendTemperature(sender) {
 
 function has(msg, sub) {return msg.toLowerCase().includes(sub);}
 
-function has(msg, arr) {
+function hasArr(msg, arr) {
   for(sub in arr) {if(has(msg, arr[sub])) return true;}
   return false;
 }
@@ -138,7 +138,7 @@ function assessPrompt(msg) {
 
   if(has(msg, 'help')) return 'help';
   if(msg === 'Generic') return 'generic';
-  if(has(msg, displayKeywords) && has(msg, temperatureKeywords)) return 'temperature';
+  if(hasArr(msg, displayKeywords) && hasArr(msg, temperatureKeywords)) return 'temperature';
   return 'default';
 }
 
@@ -153,6 +153,7 @@ router.post('/webhook/', function (req, res) {
       switch(assessPrompt(text)) {
         case 'help':
           sendTextMessage(sender, s.HELP); 
+          break;
         case 'generic':
           sendGenericMessage(sender);
           break;
