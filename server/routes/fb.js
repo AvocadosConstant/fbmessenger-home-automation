@@ -126,7 +126,7 @@ function assessPrompt(msg) {
   if(msg === 'Generic') return 'generic';
 
   var displayKeywords = ['tell', 'give', 'show', 'what', 'display', 'how'];
-  var temperatureKeywords = ['temperature', 'temp', 'heat', 'hot', 'cold'];
+  var temperatureKeywords = ['temperature', 'temp', 'heat', 'hot', 'warm', 'cold'];
 
   for(disp in displayKeywords) {
     for(temp in temperatureKeywords) {
@@ -135,6 +135,7 @@ function assessPrompt(msg) {
       }
     }
   }
+  return 'none';
 }
 
 router.post('/webhook/', function (req, res) {
@@ -143,7 +144,8 @@ router.post('/webhook/', function (req, res) {
     event = req.body.entry[0].messaging[i];
     sender = event.sender.id;
     if (event.message && event.message.text) {
-      switch(assessPrompt(event.message.text)) {
+      var text = event.message.text;
+      switch(assessPrompt(text)) {
         case 'generic':
           sendGenericMessage(sender);
           break;
