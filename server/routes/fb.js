@@ -245,7 +245,7 @@ router.post('/doorbell', function(req, res) {
 });
 
 router.post('/getTemp', function(req, res) {
-  recTemp = req.body;
+  recTemp = req.body.temp;
   res.send("Set temp...");
 });
 
