@@ -3,10 +3,31 @@ var router = express.Router();
 var request = require('request');
 var keys = require('../keys');
 var s = require('../res/strings/english');  //  Strings
+var multer  = require('multer');
+var upload = multer({dest: 'uploads/'});
+var fs = require('fs');
+
 
 // Index route
 router.get('/', function (req, res) {
   res.send('Hello, I am a bot!');
+});
+
+// cam view
+router.get('/cam/', function (req, res) {
+  res.sendFile(__dirname + '/cam.html');
+});
+
+router.post('/pic/', upload.single('webcam'), function(req, res) {
+  console.log(req.file);
+
+  fs.rename(req.file.path, 'public/shot.jpg', function(err) {
+    if(err) {
+      res.status(500).send(err);
+    } else {
+      res.send('Screenshot success!');
+    }
+  });
 });
 
 // for Facebook verification
@@ -198,7 +219,7 @@ router.post('/webhook/', function (req, res) {
           break;
         case 'cam':
           sendText(sender, 'Here\'s your picture!');
-          sendImage(sender, 'http://lorempixel.com/400/400/abstract/'); 
+          sendImage(sender, 'https://fb.jagels.us/public/snap.jpg'); 
           break;
         case 'state':
           sendText(sender, s.responses.TFLUK);
