@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var keys = require('../keys');
+var s = require('../res/strings/english');  //  Strings
 
 // Index route
 router.get('/', function (req, res) {
@@ -19,7 +20,8 @@ router.get('/webhook/', function (req, res) {
 function sendTextMessage(sender, text) {
   console.log('Repeating user\'s message...');
   messageData = {
-    text:text
+    text: 'Ok\nThanks for letting us know.'
+    //text:text
   }
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -35,7 +37,7 @@ function sendTextMessage(sender, text) {
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
     }
-  })
+  });
 }
 
 function sendGenericMessage(sender) {
@@ -125,20 +127,21 @@ function sendTemperature(sender) {
   })
 }
 
-function assessPrompt(msg) {
-  if(msg === 'Generic') return 'generic';
+function has(msg, sub) {return msg.toLowerCase().includes(sub);}
 
+function has(msg, arr) {
+  for(sub in arr) {if(has(msg, arr[sub])) return true;}
+  return false;
+}
+
+function assessPrompt(msg) {
   var displayKeywords = ['tell', 'give', 'show', 'what', 'display', 'how'];
   var temperatureKeywords = ['temperature', 'temp', 'heat', 'hot', 'warm', 'cold'];
 
-  for(disp in displayKeywords) {
-    for(temp in temperatureKeywords) {
-      if(msg.toLowerCase().includes(displayKeywords[disp]) && msg.toLowerCase().includes(temperatureKeywords[temp])) {
-        return 'temperature';
-      }
-    }
-  }
-  return 'none';
+  if(has(msg, 'help')) return 'help';
+  if(msg === 'Generic') return 'generic';
+  if(has(msg, displayKeywords) && has(msg, temperatureKeywords)) return 'temperature';
+  return 'default';
 }
 
 router.post('/webhook/', function (req, res) {
@@ -147,9 +150,11 @@ router.post('/webhook/', function (req, res) {
     event = req.body.entry[0].messaging[i];
     sender = event.sender.id;
     if (event.message && event.message.text) {
-      console.log('Received message: ' + text);
       var text = event.message.text;
+      console.log('Received message: ' + text);
       switch(assessPrompt(text)) {
+        case 'help':
+          sendTextMessage(sender, s.HELP); 
         case 'generic':
           sendGenericMessage(sender);
           break;
@@ -157,7 +162,7 @@ router.post('/webhook/', function (req, res) {
           sendTemperature(sender);
           break;
         default:
-          sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
+          sendTextMessage(sender, 'You said: ' + text.substring(0, 200));
       }
     }
     if (event.postback) {
