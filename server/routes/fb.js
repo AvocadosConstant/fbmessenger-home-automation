@@ -18,10 +18,8 @@ router.get('/webhook/', function (req, res) {
 });
 
 function sendTextMessage(sender, text) {
-  console.log('Repeating user\'s message...');
   messageData = {
-    text: 'Ok\nThanks for letting us know.'
-    //text:text
+    text:text
   }
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -162,7 +160,7 @@ router.post('/webhook/', function (req, res) {
           sendTemperature(sender);
           break;
         default:
-          sendTextMessage(sender, 'You said: ' + text.substring(0, 200));
+          sendTextMessage(sender, 'Ok\nThanks for letting us know.');
       }
     }
     if (event.postback) {
