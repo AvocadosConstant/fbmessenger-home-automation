@@ -19,6 +19,7 @@
     "request": "^2.71.0",
     "scikit-node": "^0.2.2",
     "serve-favicon": "~2.3.0",
-    "spotify-web-api-node": "^2.3.0"
+    "spotify-web-api-node": "^2.3.0",
+    "webcamjs": "^1.0.6"
   }
 }
