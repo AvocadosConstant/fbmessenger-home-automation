@@ -53,14 +53,14 @@ function sendGeneric(sender) {
             "type": "web_url",
             "url": "https://www.messenger.com",
             "title": "web url"
-          }, 
+          },
           {
             "type": "postback",
             "title": "Postback",
             "payload": "Payload for first element in a generic bubble",
           }
           ],
-        }, 
+        },
         {
           "title": "Second card",
           "subtitle": "Element #2 of an hscroll",
@@ -129,7 +129,7 @@ function sendImage(sender, imageURL) {
     "attachment": {
       "type": "image",
       "payload": {
-        "url": imageURL 
+        "url": imageURL
       }
     }
   }
@@ -175,6 +175,7 @@ function assessPrompt(msg) {
   return 'default';
 }
 
+var sender;
 router.post('/webhook/', function (req, res) {
   messaging_events = req.body.entry[0].messaging;
   for (i = 0; i < messaging_events.length; i++) {
@@ -185,7 +186,7 @@ router.post('/webhook/', function (req, res) {
       console.log('Received message: ' + text);
       switch(assessPrompt(text)) {
         case 'help':
-          sendText(sender, s.responses.HELP); 
+          sendText(sender, s.responses.HELP);
           break;
         case 'generic':
           sendGeneric(sender);
@@ -198,7 +199,7 @@ router.post('/webhook/', function (req, res) {
           break;
         case 'cam':
           sendText(sender, 'Here\'s your picture!');
-          sendImage(sender, 'http://lorempixel.com/400/400/abstract/'); 
+          sendImage(sender, 'http://lorempixel.com/400/400/abstract/');
           break;
         case 'state':
           sendText(sender, s.responses.TFLUK);
@@ -214,6 +215,10 @@ router.post('/webhook/', function (req, res) {
     }
   }
   res.sendStatus(200);
+});
+
+router.post('/doorbell', function(req, res) {
+  sendText(sender, 'DingDing');
 });
 
 var token = keys.FB_ACCESS_TOKEN;
