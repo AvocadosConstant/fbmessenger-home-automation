@@ -6,13 +6,19 @@ board.on("ready", function() {
     controller: "MPU6050"
   });
 
-  temperature.on("change", function() {
-    console.log("temperature");
-    console.log("  celsius      : ", this.celsius);
-    console.log("  fahrenheit   : ", this.fahrenheit);
-    console.log("  kelvin       : ", this.kelvin);
-    console.log("--------------------------------------");
+  var button = new five.Button(4);
+
+  board.repl.inject({
+    button: button
   });
+
+  button.on("down", function() {
+    console.log("DOORBELL!");
+  });
+
+  var timer = setInterval(function() {
+    console.log(Number(temperature.fahrenheit).toFixed(2));
+  },1000)
 });
 
 // @markdown

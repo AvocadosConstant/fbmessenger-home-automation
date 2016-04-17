@@ -1,0 +1,15 @@
+{
+  "name": "arduino",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nikolas Vanderhoof, William Jagels, Tim Hung",
+  "license": "ISC",
+  "dependencies": {
+    "johnny-five": "^0.9.39",
+    "request": "^2.71.0"
+  }
+}
