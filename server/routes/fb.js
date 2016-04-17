@@ -219,7 +219,7 @@ router.post('/webhook/', function (req, res) {
           break;
         case 'cam':
           sendText(sender, 'Here\'s your picture!');
-          sendImage(sender, 'https://fb.jagels.us/public/snap.jpg'); 
+          sendImage(sender, 'https://fb.jagels.us/shot.jpg'); 
           break;
         case 'state':
           sendText(sender, s.responses.TFLUK);
