@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>My Home Secure Monitoring Camera Client</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+    <link rel="stylesheet" type="css" href="/stylesheets/cam.css">
+</head>
+<body>
+  <div class="container">
+    <h1>My Home Secure Monitoring Camera Client</h1>
+    <h3>This front end security camera client for your home automation system.</h3>
+    <p>Effortlessly ask your Home Facebook bot for screenshots sent directly to your phone.</p>
+    <p>Just aim your device camera at an area you would like to monitor and you're ready to go!</p>
+  
+    <h2>Please select an identifying camera number.</h2>
+    <form id="myForm">
+      <input type=text id="camNum" value=""> 
+      <input type=submit value="" style="visibility: hidden;">
+    </form>
+
+    <script language="JavaScript">
+      function processForm(e) {
+        if (e.preventDefault) e.preventDefault();
+        console.log("redirecting");
+        window.open("/bot/cam/" + document.getElementById("camNum").value,'_self');
+        return false;
+      }
+      var form = document.getElementById('myForm');
+      if (form.attachEvent) {
+        form.attachEvent("submit", processForm);
+      } else {
+        form.addEventListener("submit", processForm);
+      }
+    </script>
+  </div>
+</body>
+</html>

@@ -15,13 +15,18 @@ router.get('/', function (req, res) {
 
 // cam view
 router.get('/cam/', function (req, res) {
-  res.sendFile(__dirname + '/cam.html');
+  res.render('camSelect');
 });
 
-router.post('/pic/', upload.single('webcam'), function(req, res) {
-  console.log(req.file);
+// cam view
+router.get('/cam/:num', function (req, res) {
+  res.render('cam', { num: req.params.num });
+});
 
-  fs.rename(req.file.path, 'public/shot.jpg', function(err) {
+router.post('/pic/:num', upload.single('webcam'), function(req, res) {
+  console.log(req.file);
+  var num = req.params.num;
+  fs.rename(req.file.path, 'public/shot' + num + '.jpg', function(err) {
     if(err) {
       res.status(500).send(err);
     } else {
@@ -220,8 +225,9 @@ router.post('/webhook/', function (req, res) {
           sendText(sender, s.responses.GREET);
           break;
         case 'cam':
+          var num = text.match('/\d+/');
           sendText(sender, 'Here\'s your picture!');
-          sendImage(sender, 'https://fb.jagels.us/shot.jpg');
+          sendImage(sender, 'https://fb.jagels.us/shot'+num+'.jpg');
           break;
         case 'state':
           sendText(sender, s.responses.TFLUK);

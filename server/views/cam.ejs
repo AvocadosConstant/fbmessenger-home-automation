@@ -4,20 +4,22 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>My Home Secure Monitoring Camera Client</title>
-    <link rel="stylesheet" type="css" href="../stylesheets/cam.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+    <link rel="stylesheet" type="css" href="/stylesheets/cam.css">
 </head>
 <body>
     <div class="container">
 	  
 	  <h1>My Home Secure Monitoring Camera Client</h1>
 	  <h3>This front end security camera client for your home automation system.</h3>
-      <p>Effortlessly ask your Home Facebook bot for screenshots sent directly to your phone.</p>
-      <p>Just aim your device camera at an area you would like to monitor and you're ready to go!</p>
-	  
+    <p>Effortlessly ask your Home Facebook bot for screenshots sent directly to your phone.</p>
+    <p>Just aim your device camera at an area you would like to monitor and you're ready to go!</p>
+  
+    <h2>This is camera #<%=num%>.</h2>
 	  <div id="my_camera"></div>
 	  
 	  <!-- First, include the Webcam.js JavaScript Library -->
-	  <script type="text/javascript" src="../webcam.min.js"></script>
+	  <script type="text/javascript" src="/webcam.min.js"></script>
 	  
 	  <!-- Configure a few settings and attach camera -->
 	  <script language="JavaScript">
@@ -33,9 +35,9 @@
 	  </script>
 	  
 	  <!-- A button for taking snaps -->
-	  <form>
+	  <!--<form>
 	  	<input type=button value="Manually Take Photo" onClick="take_snapshot()">
-	  </form>
+      </form> -->
 	  
       <hr>
 
@@ -47,13 +49,13 @@
 	  		// take snapshot and get image data
 	  		Webcam.snap( function(data_uri) {
 	  			// display results in page
-                  document.getElementById('results').innerHTML = 
-	  				'<h2>Image output:</h2>' + 
-	  				'<img src="'+data_uri+'"/>';
+          document.getElementById('results').innerHTML = 
+          '<h2>Image output:</h2>' + 
+          '<img src="'+data_uri+'"/>';
 
-                  Webcam.upload( data_uri, '/bot/pic', function(code, text) {
-                      setTimeout(take_snapshot, 1000);
-                  });
+          Webcam.upload( data_uri, '/bot/pic/' + <%=num%>, function(code, text) {
+              setTimeout(take_snapshot, 1000);
+          });
 	  		});
 	  	};
           setTimeout(take_snapshot, 3000);
