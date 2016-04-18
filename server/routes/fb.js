@@ -24,7 +24,7 @@ router.get('/cam/:num', function (req, res) {
 });
 
 router.post('/pic/:num', upload.single('webcam'), function(req, res) {
-  console.log(req.file);
+  //console.log(req.file);
   var num = req.params.num;
   fs.rename(req.file.path, 'public/shot' + num + '.jpg', function(err) {
     if(err) {
@@ -128,7 +128,7 @@ function sendTemperature(sender) {
         "template_type": "generic",
         "elements": [{
           "title": "Current Temperature",
-          "subtitle": recTemp
+          "subtitle": recTemp + " °F"
         }]
       }
     }
@@ -185,6 +185,7 @@ function sendAllCams(sender, arr) {
         "image_url": "https://fb.jagels.us/shot" + arr[cam] + ".jpg"
     });
   }
+  console.log(elements);
   messageData = {
     "attachment": {
       "type": "template",
@@ -283,7 +284,7 @@ router.post('/webhook/', function (req, res) {
 });
 
 router.post('/doorbell', function(req, res) {
-  sendText(sender, 'DingDing');
+  sendText(sender, 'Hey, there\'s someone at your door!');
   res.send("Rang doorbell...");
 });
 
