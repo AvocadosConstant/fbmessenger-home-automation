@@ -7,7 +7,7 @@ module.exports = {
     'TFLUK': 'Okay. Thanks for letting me know.'
   },
   'words': {
-    'DISPLAY': ['tell', 'give', 'show', 'what', 'what\'s', 'display', 'how'],
+    'DISPLAY': ['tell', 'give', 'show', 'what', 'what\'s', 'display', 'how', 'is it'],
     'TEMPERATURE': ['temperature', 'temp', 'heat', 'hot', 'warm', 'cold'],
     'GREET': ['hello', 'hi', 'hey', 'good day', 'what\'s up', 'whats up', 'sup', 'good morning', 'good evening'],
     'STATE': ['i am', 'i\'m', 'im '],
