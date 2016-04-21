@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express');
 var router = express.Router();
 var request = require('request');
@@ -44,172 +45,172 @@ router.get('/webhook/', function (req, res) {
 });
 
 function sendText(sender, text) {
-  messageData = {text:text};
+  var messageData = {text:text};
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
     method: 'POST',
     json: {
       recipient: {id:sender},
-      message: messageData,
+      message: messageData
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error)
+      console.log('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
+      console.log('Error: ', body.error);
     }
   });
 }
 
 function sendGeneric(sender) {
   console.log('Displaying generic message...');
-  messageData = {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [
-        {
-          "title": "First card",
-          "subtitle": "Element #1 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-          "buttons": [
+  var messageData = {
+    'attachment': {
+      'type': 'template',
+      'payload': {
+        'template_type': 'generic',
+        'elements': [
           {
-            "type": "web_url",
-            "url": "https://www.messenger.com",
-            "title": "web url"
+            'title': 'First card',
+            'subtitle': 'Element #1 of an hscroll',
+            'image_url': 'http://messengerdemo.parseapp.com/img/rift.png',
+            'buttons': [
+              {
+                'type': 'web_url',
+                'url': 'https://www.messenger.com',
+                'title': 'web url'
+              },
+              {
+                'type': 'postback',
+                'title': 'Postback',
+                'payload': 'Payload for first element in a generic bubble'
+              }
+            ]
           },
           {
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for first element in a generic bubble",
+            'title': 'Second card',
+            'subtitle': 'Element #2 of an hscroll',
+            'image_url': 'http://messengerdemo.parseapp.com/img/gearvr.png',
+            'buttons': [{
+              'type': 'postback',
+              'title': 'Postback',
+              'payload': 'Payload for second element in a generic bubble'
+            }]
           }
-          ],
-        },
-        {
-          "title": "Second card",
-          "subtitle": "Element #2 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-          "buttons": [{
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for second element in a generic bubble",
-          }],
-        }
         ]
       }
     }
-  }
+  };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
     method: 'POST',
     json: {
       recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
-var recTemp = 'null';
-function sendTemperature(sender) {
-  console.log('Displaying temperature...');
-  messageData = {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "Current Temperature",
-          "subtitle": recTemp + " °F"
-        }]
-      }
-    }
-  }
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
+      message: messageData
     }
   }, function(error, response, body) {
     if (error) {
       console.log('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
+      console.log('Error: ', body.error);
     }
-  })
+  });
 }
 
-function sendImage(sender, imageURL) {
-  console.log('Sending image...');
-  messageData = {
-    "attachment": {
-      "type": "image",
-      "payload": {
-        "url": imageURL
+var recTemp = 'null';
+function sendTemperature(sender) {
+  console.log('Displaying temperature...');
+  var messageData = {
+    'attachment': {
+      'type': 'template',
+      'payload': {
+        'template_type': 'generic',
+        'elements': [{
+          'title': 'Current Temperature',
+          'subtitle': recTemp + ' °F'
+        }]
       }
     }
-  }
+  };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
     method: 'POST',
     json: {
       recipient: {id:sender},
-      message: messageData,
+      message: messageData
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error)
+      console.log('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
+      console.log('Error: ', body.error);
+    }
+  });
+}
+
+function sendImage(sender, imageURL) {
+  console.log('Sending image...');
+  var messageData = {
+    'attachment': {
+      'type': 'image',
+      'payload': {
+        'url': imageURL
+      }
+    }
+  };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error);
+    } else if (response.body.error) {
+      console.log('Error: ', body.error);
     }
   });
 }
 
 function sendAllCams(sender, arr) {
   var elements = [];
-  for(cam in arr) {
+  for(var cam in arr) {
     elements.push({
-        "title" : "Cam " + arr[cam],
-        "image_url": "https://fb.jagels.us/shot" + arr[cam] + ".jpg"
+      'title' : 'Cam ' + arr[cam],
+      'image_url': 'https://fb.jagels.us/shot' + arr[cam] + '.jpg'
     });
   }
   console.log(elements);
-  messageData = {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": elements
+  var messageData = {
+    'attachment': {
+      'type': 'template',
+      'payload': {
+        'template_type': 'generic',
+        'elements': elements
       }
     }
-  }
+  };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
     method: 'POST',
     json: {
       recipient: {id:sender},
-      message: messageData,
+      message: messageData
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error)
+      console.log('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
+      console.log('Error: ', body.error);
     }
-  })
+  });
 }
 
 function has(msg, sub) {
@@ -222,7 +223,10 @@ function has(msg, sub) {
 }
 
 function hasArr(msg, arr) {
-  for(sub in arr) {if(has(msg, arr[sub])) return true;}
+  for(var sub in arr) {
+    if(has(msg, arr[sub]))
+      return true;
+  }
   return false;
 }
 
@@ -238,45 +242,45 @@ function assessPrompt(msg) {
 
 var sender;
 router.post('/webhook/', function (req, res) {
-  messaging_events = req.body.entry[0].messaging;
-  for (i = 0; i < messaging_events.length; i++) {
-    event = req.body.entry[0].messaging[i];
+  var messaging_events = req.body.entry[0].messaging;
+  for (var i = 0; i < messaging_events.length; i++) {
+    var event = req.body.entry[0].messaging[i];
     sender = event.sender.id;
     if (event.message && event.message.text) {
       var text = event.message.text;
       console.log('Received message: ' + text);
       switch(assessPrompt(text)) {
-        case 'help':
-          sendText(sender, s.responses.HELP);
-          break;
-        case 'generic':
-          sendGeneric(sender);
-          break;
-        case 'temperature':
-          sendTemperature(sender);
-          break;
-        case 'greet':
-          sendText(sender, s.responses.GREET);
-          break;
-        case 'cam':
-          var num = text.match(/\d+/);
-          sendText(sender, 'Here\'s your picture!');
-          if(has(text, 'all')) {
-            sendAllCams(sender, num);
-          } else {
-            sendImage(sender, 'https://fb.jagels.us/shot'+num[0]+'.jpg');
-          }
-          break;
-        case 'state':
-          sendText(sender, s.responses.TFLUK);
-          break;
-        default:
-          console.log('No prompt recognized...');
+      case 'help':
+        sendText(sender, s.responses.HELP);
+        break;
+      case 'generic':
+        sendGeneric(sender);
+        break;
+      case 'temperature':
+        sendTemperature(sender);
+        break;
+      case 'greet':
+        sendText(sender, s.responses.GREET);
+        break;
+      case 'cam':
+        var num = text.match(/\d+/);
+        sendText(sender, 'Here\'s your picture!');
+        if(has(text, 'all')) {
+          sendAllCams(sender, num);
+        } else {
+          sendImage(sender, 'https://fb.jagels.us/shot'+num[0]+'.jpg');
+        }
+        break;
+      case 'state':
+        sendText(sender, s.responses.TFLUK);
+        break;
+      default:
+        console.log('No prompt recognized...');
       }
     }
     if (event.postback) {
       text = JSON.stringify(event.postback);
-      sendText(sender, "Postback received: "+text.substring(0, 200), token);
+      sendText(sender, 'Postback received: '+text.substring(0, 200), token);
       continue;
     }
   }
@@ -285,12 +289,12 @@ router.post('/webhook/', function (req, res) {
 
 router.post('/doorbell', function(req, res) {
   sendText(sender, 'Hey, there\'s someone at your door!');
-  res.send("Rang doorbell...");
+  res.send('Rang doorbell...');
 });
 
 router.post('/getTemp', function(req, res) {
   recTemp = req.body.temp;
-  res.send("Set temp...");
+  res.send('Set temp...');
 });
 
 var token = keys.FB_ACCESS_TOKEN;
