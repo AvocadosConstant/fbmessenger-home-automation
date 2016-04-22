@@ -2,7 +2,8 @@
 var express = require('express');
 var path = require('path');
 // var favicon = require('serve-favicon');
-var logger = require('morgan');
+var winston = require('winston');
+var expressWinston = require('express-winston');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -21,7 +22,35 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+var logger = new winston.Logger({
+  transports: [
+    new winston.transports.File({
+      level: 'info',
+      filename: './logs/all-logs.log',
+      handleExceptions: true,
+      json: false,
+      maxsize: 5242880, //5MB
+      maxFiles: 5,
+      colorize: false
+    }),
+    new winston.transports.Console({
+      level: 'debug',
+      handleExceptions: true,
+      json: false,
+      colorize: true
+    })
+  ],
+  exitOnError: false
+});
+
+app.use(expressWinston.logger({
+  winstonInstance: logger,
+  meta: false, // optional: control whether you want to log the meta data about the request (default to true)
+  msg: 'HTTP {{req.method}} {{res.responseTime}}ms {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+  expressFormat: true, // Use the default Express/morgan request formatting, with the same colors. Enabling this will override any msg and colorStatus if true. Will only output colors on transports with colorize set to true
+  skip: function(req, res) { return res.statusCode >= 400; }
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -38,6 +67,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/bot', fb);
+
+app.use(expressWinston.errorLogger({
+  winstonInstance: logger
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

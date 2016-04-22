@@ -7,6 +7,7 @@ var s = require('../res/strings/english');  //  Strings
 var multer  = require('multer');
 var upload = multer({dest: 'uploads/'});
 var fs = require('fs');
+var logger = require('winston');
 
 
 // Index route
@@ -25,7 +26,6 @@ router.get('/cam/:num', function (req, res) {
 });
 
 router.post('/pic/:num', upload.single('webcam'), function(req, res) {
-  //console.log(req.file);
   var num = req.params.num;
   fs.rename(req.file.path, 'public/shot' + num + '.jpg', function(err) {
     if(err) {
@@ -56,15 +56,15 @@ function sendText(sender, text) {
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error);
+      logger.error('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', body.error);
+      logger.error('Error: ', body.error);
     }
   });
 }
 
 function sendGeneric(sender) {
-  console.log('Displaying generic message...');
+  logger.info('Displaying generic message...');
   var messageData = {
     'attachment': {
       'type': 'template',
@@ -112,16 +112,16 @@ function sendGeneric(sender) {
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error);
+      logger.error('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', body.error);
+      logger.error('Error: ', body.error);
     }
   });
 }
 
 var recTemp = 'null';
 function sendTemperature(sender) {
-  console.log('Displaying temperature...');
+  logger.info('Displaying temperature...');
   var messageData = {
     'attachment': {
       'type': 'template',
@@ -144,15 +144,15 @@ function sendTemperature(sender) {
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error);
+      logger.error('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', body.error);
+      logger.error('Error: ', body.error);
     }
   });
 }
 
 function sendImage(sender, imageURL) {
-  console.log('Sending image...');
+  logger.info('Sending image...');
   var messageData = {
     'attachment': {
       'type': 'image',
@@ -171,9 +171,9 @@ function sendImage(sender, imageURL) {
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error);
+      logger.error('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', body.error);
+      logger.error('Error: ', body.error);
     }
   });
 }
@@ -186,7 +186,7 @@ function sendAllCams(sender, arr) {
       'image_url': 'https://fb.jagels.us/shot' + arr[cam] + '.jpg'
     });
   }
-  console.log(elements);
+  logger.info(elements);
   var messageData = {
     'attachment': {
       'type': 'template',
@@ -206,9 +206,9 @@ function sendAllCams(sender, arr) {
     }
   }, function(error, response, body) {
     if (error) {
-      console.log('Error sending messages: ', error);
+      logger.error('Error sending messages: ', error);
     } else if (response.body.error) {
-      console.log('Error: ', body.error);
+      logger.error('Error: ', body.error);
     }
   });
 }
@@ -248,7 +248,7 @@ router.post('/webhook/', function (req, res) {
     sender = event.sender.id;
     if (event.message && event.message.text) {
       var text = event.message.text;
-      console.log('Received message: ' + text);
+      logger.info('Received message: ' + text);
       switch(assessPrompt(text)) {
       case 'help':
         sendText(sender, s.responses.HELP);
@@ -275,7 +275,7 @@ router.post('/webhook/', function (req, res) {
         sendText(sender, s.responses.TFLUK);
         break;
       default:
-        console.log('No prompt recognized...');
+        logger.info('No prompt recognized...');
       }
     }
     if (event.postback) {

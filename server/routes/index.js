@@ -13,7 +13,6 @@ var credentials = {
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
-  console.log(req.user);
 });
 
 router.get('/me_irl', ensureAuthenticated, function(req, res) {
