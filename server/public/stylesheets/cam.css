@@ -1,0 +1,27 @@
+body { 
+  text-align: center;
+  background: #DDD;
+}
+
+h2, h3 { 
+  margin-top:0; 
+}
+		
+form { 
+  margin: 20px auto;
+}
+
+#results { 
+  margin:0 auto; 
+  padding:20px; 
+}
+
+.container {
+  width: 800px;
+  margin: 0 auto;
+  background: #EEE;
+}
+
+img, #my_camera {
+  margin: 0 auto;
+}
