@@ -26,9 +26,9 @@ var logger = new winston.Logger({
   transports: [
     new winston.transports.File({
       level: 'info',
-      filename: './logs/all-logs.log',
+      filename: './debug-logs.log',
       handleExceptions: true,
-      json: false,
+      json: true,
       maxsize: 5242880, //5MB
       maxFiles: 5,
       colorize: false
@@ -45,10 +45,8 @@ var logger = new winston.Logger({
 
 app.use(expressWinston.logger({
   winstonInstance: logger,
-  meta: false, // optional: control whether you want to log the meta data about the request (default to true)
-  msg: 'HTTP {{req.method}} {{res.responseTime}}ms {{req.url}}', // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-  expressFormat: true, // Use the default Express/morgan request formatting, with the same colors. Enabling this will override any msg and colorStatus if true. Will only output colors on transports with colorize set to true
-  skip: function(req, res) { return res.statusCode >= 400; }
+  meta: false,
+  expressFormat: true
 }));
 
 app.use(bodyParser.json());
@@ -84,7 +82,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res) {
+  app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -95,7 +93,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res) {
+app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
